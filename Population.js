@@ -5,16 +5,16 @@ class Population {
 		this.num_moves = num_moves
 		for (var i = 0; i < num_brains; i++) {
 			this.brains[i] = new Brain(num_moves);
+			//this.brains[i].projec.info_i(i);
 		}
 		this.generation = 1;
 	}
 
 	natural_selection() {
-		//console.log("Running natural selection")
 		var best_idx = 0;
 		var best_fitness = this.brains[0].fitness;
 		//console.log("Genome 0 has fitness " + this.brains[0].fitness)
-		console.log("Genome 0 got distances: " + this.brains[0].lowest_distances)
+		//console.log("Genome 0 got distances: " + this.brains[0].lowest_distances)
 		for (var i = 1; i < this.num_brains; i++) {
 			var actual_fitness = this.brains[i].fitness;
 			if (actual_fitness > best_fitness) {
@@ -22,10 +22,9 @@ class Population {
 				best_fitness = actual_fitness;
 			}	
 			//console.log("Genome "+i+" has fitness " + this.brains[i].fitness + " with shot: "+p.brains[i].directions)
-			console.log("Genome " +i+ " got distances: " + this.brains[i].lowest_distances)
+			//console.log("Genome " +i+ " got distances: " + this.brains[i].lowest_distances)
 		}
 		console.log(best_idx+" is the best genome of generation " + this.generation + ". At distance: " + floor(1/best_fitness));
-		//console.log("Did it go to goal? "+this.brains[best_idx].reached_goal)
 		return best_idx;
 	}
 
@@ -55,13 +54,16 @@ class Population {
 		//console.log("Setting next generation")
 		var genome_brain = this.brains[selected_genome];
 		var genome_movements = this.vectorClone(this.brains[selected_genome].directions);
+		//console.log("THE SELECTED GENOME HAS VECTOR: "+genome_movements)
 		for (var i = 0; i < this.num_brains; i++) {
 			this.brains[i] =  new Brain(this.num_moves);
 			this.brains[i].directions = this.vectorClone(genome_movements);
 			if (i != 0) {
 				this.brains[i].mutate();
 			}
-			console.log("created brain " +i+" with dirs = "+this.brains[i].directions)
+			this.brains[i].set_projec_vec();
+			//this.brains[i].projec.info_i(i);
+			//console.log("created brain " +i+" with dirs = "+this.brains[i].directions)
 		}
 		this.generation+=1;
 	}
@@ -89,11 +91,10 @@ class Population {
 	}
 
 	update_step() {
-		//console.log("Showing generation step")
 		this.brains[0].update();
 		for (var i = 1; i < this.num_brains; i++) {
 			this.brains[i].update();
-			this.brains[i].show();
+			if (!showbest) this.brains[i].show();
 		}
 		this.brains[0].show_first();
 	}
