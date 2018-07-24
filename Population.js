@@ -25,6 +25,7 @@ class Population {
 			//console.log("Genome " +i+ " got distances: " + this.brains[i].lowest_distances)
 		}
 		console.log(best_idx+" is the best genome of generation " + this.generation + ". At distance: " + floor(1/best_fitness));
+		best_distance = floor(1/best_fitness);
 		return best_idx;
 	}
 

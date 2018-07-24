@@ -15,6 +15,8 @@ var p;
 var mouse_pressed = false;
 var mouse_released = false;
 
+var best_distance = 999;
+
 var margin = 250;
 
 var showbest = false;
@@ -27,6 +29,11 @@ function setup() {
 function draw() {
 	clear();
 	fill(0,0,0);
+
+	textSize(25*scaling);
+  	text("Generation: "+p.generation, (x_pixels-margin)*scaling+10*scaling, 25*scaling);
+  	text("Best Distance: "+floor(best_distance), (x_pixels-margin)*scaling+10*scaling, 50*scaling);
+
 	line(0,0,0,y_pixels*scaling);
 	line(0,0,x_pixels*scaling-margin*scaling,0);
 	line(x_pixels*scaling-margin*scaling,0,x_pixels*scaling-margin*scaling,y_pixels*scaling);
