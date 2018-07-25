@@ -64,6 +64,7 @@ function draw() {
 
 function touchEnded() {
 	goals.push([mouseX, mouseY]);
+	return false;
 }
 
 function mouseReleased() {
