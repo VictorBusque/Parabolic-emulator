@@ -62,13 +62,20 @@ function draw() {
 
 }
 
+
+function withinLimits(x) {
+	return x < x_pixels*scaling-margin;
+}
+
+
 function touchEnded() {
-	goals.push([mouseX, mouseY]);
+	if (withinLimits(mouseX)) goals.push([mouseX, mouseY]);
 	return false;
 }
 
 function mouseReleased() {
-   goals.push([mouseX, mouseY]);
+	if (withinLimits(mouseX)) goals.push([mouseX, mouseY]);
+	return false;
 }
 
 
