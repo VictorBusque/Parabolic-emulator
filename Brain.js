@@ -110,6 +110,7 @@ class Brain {
   show_first() {
     fill(0,250,250);
     this.projec.show();
+    this.projec.show_line();
   }
 }
 

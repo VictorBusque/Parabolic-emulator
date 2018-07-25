@@ -1,8 +1,9 @@
-var initial_pos = [10,550];
+var initial_pos = [150,450];
 var initial_speed = [];
 var goals = [];
 
 var scaling = 1;
+var arrow_scaling = 8;
 var x_pixels = 1280;
 var y_pixels = 600;
 
@@ -11,6 +12,8 @@ var time_scaling_factor = 0.01;
 var limit_power = 50;
 var mutation_scale = 5;
 var p;
+
+var n_brains = 50;
 
 var mouse_pressed = false;
 var mouse_released = false;
@@ -23,7 +26,9 @@ var showbest = false;
 
 function setup() {
 	createCanvas(x_pixels*scaling, y_pixels*scaling);
-	p = new Population(20,1);
+	p = new Population(n_brains,1);
+	frameRate(120);
+	fullscreen(true);
 }
 
 function draw() {
@@ -33,12 +38,12 @@ function draw() {
 	textSize(25*scaling);
   	text("Generation: "+p.generation, (x_pixels-margin)*scaling+10*scaling, 25*scaling);
   	text("Best Distance: "+floor(best_distance), (x_pixels-margin)*scaling+10*scaling, 50*scaling);
-
+	strokeWeight(2);
 	line(0,0,0,y_pixels*scaling);
 	line(0,0,x_pixels*scaling-margin*scaling,0);
 	line(x_pixels*scaling-margin*scaling,0,x_pixels*scaling-margin*scaling,y_pixels*scaling);
 	line(0,y_pixels*scaling,x_pixels*scaling-margin*scaling,y_pixels*scaling);
-	strokeWeight(2);
+	
 	fill(0,255,0);
 	for (var i = 0; i < goals.length; i++) {
 		ellipse(goals[i][0]*scaling, goals[i][1]*scaling, 15*scaling, 15*scaling);
@@ -57,8 +62,12 @@ function draw() {
 
 }
 
+function touchEnded() {
+	goals.push([mouseX, mouseY]);
+}
+
 function mouseReleased() {
-   goals.push([mouseX, mouseY])
+   goals.push([mouseX, mouseY]);
 }
 
 
@@ -111,5 +120,11 @@ class Projectile {
 
 	show() {
 		ellipse(this.x, this.y, 10*scaling, 10*scaling);
+	}
+
+	show_line() {
+		strokeWeight(3);
+		fill(0,250,250);
+		line(initial_pos[0]*scaling, initial_pos[1]*scaling, initial_pos[0]*scaling-this.v_x_t*scaling*arrow_scaling, initial_pos[1]*scaling-this.v_y_t*scaling*arrow_scaling);
 	}
 }
