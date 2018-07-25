@@ -71,8 +71,10 @@ function mouseReleased() {
 }
 
 
-function keyReleased() {
-	showbest = !showbest;
+function keyPressed() {
+	if (keyCode == 32) {
+		showbest = !showbest;
+	}
 }
 
 
