@@ -22,67 +22,83 @@ var best_distance = 999;
 
 var margin = 250;
 
+var z = 20;
+var sphereSize = [15,15,15];
+
 var showbest = false;
 
+var goalColor;
+var bestColor;
+var homeColor;
+var normalColor;
+
+var start = false;
+
 function setup() {
-	createCanvas(x_pixels*scaling, y_pixels*scaling);
+	createCanvas(x_pixels*scaling, y_pixels*scaling, WEBGL);
 	p = new Population(n_brains,1);
 	frameRate(120);
-	fullscreen(true);
+	goalColor = color(0,255,0);
+	bestColor = color(0,255,255);
+	homeColor = color(255,255,0);
+	normalColor = color(0,0,255);
+	ambientLight(100);
+	pointLight(120, 120, 120, 0, 0, 0);
 }
 
 function draw() {
+
 	clear();
-	fill(0,0,0);
+	background(200);
 
-	textSize(25*scaling);
-  	text("Generation: "+p.generation, (x_pixels-margin)*scaling+10*scaling, 25*scaling);
-  	text("Best Distance: "+floor(best_distance), (x_pixels-margin)*scaling+10*scaling, 50*scaling);
-	strokeWeight(2);
-	line(0,0,0,y_pixels*scaling);
-	line(0,0,x_pixels*scaling-margin*scaling,0);
-	line(x_pixels*scaling-margin*scaling,0,x_pixels*scaling-margin*scaling,y_pixels*scaling);
-	line(0,y_pixels*scaling,x_pixels*scaling-margin*scaling,y_pixels*scaling);
-	
-	fill(0,255,0);
 	for (var i = 0; i < goals.length; i++) {
-		ellipse(goals[i][0]*scaling, goals[i][1]*scaling, 15*scaling, 15*scaling);
+		push();
+		ambientMaterial(goalColor);
+		translate(-(x_pixels/2)+goals[i][0]*scaling, -(y_pixels/2)+goals[i][1]*scaling, z+(sphereSize[2]));
+		rotateY(sin(millis()/150)*QUARTER_PI);
+		torus(floor(sphereSize[0]*1.5), 5);
+		pop();
 	}
-	fill(255,255,0);
-	ellipse(initial_pos[0]*scaling, initial_pos[1]*scaling, 20*scaling, 20*scaling);
+	push();
+	ambientMaterial(homeColor);
+	translate(-x_pixels/2+initial_pos[0]*scaling, -y_pixels/2+initial_pos[1]*scaling, z);
+	sphere(floor(sphereSize[0]*1.5), floor(sphereSize[1]*1.5), floor(sphereSize[2]*1.5));
+	pop();
 
-	if (p.someone_alive() & goals.length > 0) {
+	if (start & p.someone_alive() & goals.length > 0) {
 		p.update_step();
 	}
-	else if (goals.length > 0) {//} if (mouse_pressed) {
+	else if (start & goals.length > 0) {
 		p.compute_fitness();
-	    var selected_genome = p.natural_selection();
-	    p.set_next_generation(selected_genome);		
+    var selected_genome = p.natural_selection();
+    p.set_next_generation(selected_genome);
 	}
 
 }
 
-
-function withinLimits(x) {
-	return x < x_pixels*scaling-margin;
+function withinLimits(x, y) {
+	return x < x_pixels*scaling-margin & y < y_pixels & 0 < y;
 }
 
 
 function touchEnded() {
-	if (withinLimits(mouseX)) goals.push([mouseX, mouseY]);
+	if (withinLimits(mouseX, mouseY)) goals.push([mouseX, mouseY]);
 	return false;
 }
 
 function mouseReleased() {
-	if (withinLimits(mouseX)) goals.push([mouseX, mouseY]);
+	if (withinLimits(mouseX, mouseY)) goals.push([mouseX, mouseY]);
 	return false;
 }
 
 
 function keyPressed() {
-	if (keyCode == 32) {
+	if (keyCode == 66) {
 		showbest = !showbest;
 	}
+	else if (keyCode === 32) {
+			start = !start;
+		}
 }
 
 
@@ -110,7 +126,7 @@ class Projectile {
 
 	set_speed() {
 		this.v_x_t = initial_speed[0]*speed_factor;
-		this.v_y_t = initial_speed[1]*speed_factor;	
+		this.v_y_t = initial_speed[1]*speed_factor;
 	}
 
 	// motion equation: mx = 0, my = -mg
@@ -123,18 +139,19 @@ class Projectile {
 		else if (this.alive) {
 			this.x = this.v_x_t*this.t + this.x;
 			this.y = -(1/2)*this.g*this.t*this.t + this.v_y_t*this.t + this.y;
-			this.t = this.t + time_scaling_factor;		
+			this.t = this.t + time_scaling_factor;
 		}
 
 	}
 
 	show() {
-		ellipse(this.x, this.y, 10*scaling, 10*scaling);
+		push();
+		translate(-x_pixels/2+this.x, -y_pixels/2+this.y, z);
+		sphere(sphereSize[0], sphereSize[1], sphereSize[2]);
+		pop();
 	}
 
 	show_line() {
 		strokeWeight(3);
-		fill(0,250,250);
-		line(initial_pos[0]*scaling, initial_pos[1]*scaling, initial_pos[0]*scaling-this.v_x_t*scaling*arrow_scaling, initial_pos[1]*scaling-this.v_y_t*scaling*arrow_scaling);
 	}
 }

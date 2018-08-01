@@ -18,7 +18,7 @@ class Brain {
     }
   }
 
-  
+
   set_projec_vec() {
     this.projec = new Projectile(this.directions[0]);
   }
@@ -30,14 +30,14 @@ class Brain {
     }
   }
 
-  
+
   fill_X_pos() {
     for (var i = this.directions.length; i < this.max_moves; i++) {
       this.directions[i] = this.getRandomDirection();
     }
   }
 
-  
+
   getRandomDirection() {
     return [floor(limit_power*random(1)), floor(-limit_power*random(1))];
   }
@@ -70,7 +70,7 @@ class Brain {
       if (p) {
         var next_value = this.getRelativeDirection();
         this.directions[i] = next_value;
-      }  
+      }
     }
   }
 
@@ -103,18 +103,13 @@ class Brain {
   }
 
   show() {
-    fill(0,0,255);
+		ambientMaterial(normalColor);
     this.projec.show();
   }
 
   show_first() {
-    fill(0,250,250);
+    ambientMaterial(bestColor);
     this.projec.show();
     this.projec.show_line();
   }
 }
-
-
-
-
-
