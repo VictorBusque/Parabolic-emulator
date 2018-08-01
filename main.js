@@ -77,7 +77,7 @@ function draw() {
 }
 
 function withinLimits(x, y) {
-	return x < x_pixels*scaling-margin & y < y_pixels & 0 < y;
+	return x < x_pixels*scaling-margin & y < y_pixels*scaling & 0 < y;
 }
 
 
